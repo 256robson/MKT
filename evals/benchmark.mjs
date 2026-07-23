@@ -13,7 +13,7 @@
 // the judge of its own outputs (self-preference bias). The judge sees only the
 // text, so grading is blind by construction. Prices/models live in pricing.json.
 
-import { readFileSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadPricing, modelInfo, callModelWith, gradeWith, costUSD } from "./lib.mjs";
@@ -97,14 +97,18 @@ async function judgeConsensus(outputs) {
 }
 
 const rows = [];
+const evidence = []; // immutable per-attempt record, written once for offline re-inspection
 for (const model of contestants) {
   const outputs = [];
+  const gens = [];
   let genTokIn = 0, genTokOut = 0, genMs = 0, genCost = 0;
 
   for (const brief of briefs) {
     for (let s = 0; s < samples; s++) {
       const { text, usage, ms } = await callModelWith(model, genInstruction, brief);
-      outputs.push(text.trim().replace(/^["']|["']$/g, ""));
+      const output = text.trim().replace(/^["']|["']$/g, "");
+      outputs.push(output);
+      gens.push({ brief, sample: s, output, tokens: usage.input + usage.output, ms });
       genTokIn += usage.input; genTokOut += usage.output; genMs += ms;
       genCost += costUSD(model, usage);
     }
@@ -113,6 +117,8 @@ for (const model of contestants) {
   const verdicts = await judgeConsensus(outputs);
   const passes = verdicts.filter((v) => v === "PASS").length;
   const n = outputs.length;
+  gens.forEach((g, i) => { g.verdict = verdicts[i]; });
+  evidence.push({ model, generations: gens });
   rows.push({
     model,
     passRate: passes / n,
@@ -144,3 +150,17 @@ rows.forEach((r, i) => {
   ].join("  "));
 });
 console.log(dim(`\nQuality = judge pass-rate (blind${judgeModels.length > 1 ? ", 2-model consensus" : ""}). cost/accepted = gen cost ÷ passes — the routing metric. Prices asOf ${loadPricing().asOf} (illustrative — verify).`));
+
+// Write immutable evidence once, so the run can be inspected / re-graded offline
+// without re-generating (models are stochastic — a re-run isn't the same run).
+const runId = new Date().toISOString().replace(/[:.]/g, "-");
+const runDir = resolve(HERE, "benchmark/runs", runId);
+mkdirSync(runDir, { recursive: true });
+writeFileSync(resolve(runDir, "run.json"), JSON.stringify({
+  runId,
+  config: { judge: judgeLabel, judgeModels, tasks: cfg.tasks, contestants, samplesPerTask: samples },
+  pricingAsOf: loadPricing().asOf,
+  leaderboard: rows,
+  evidence,
+}, null, 2) + "\n");
+console.error(dim(`\nEvidence written to benchmark/runs/${runId}/run.json`));

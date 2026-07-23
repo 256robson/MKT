@@ -14,6 +14,11 @@ node benchmark.mjs my-config.json     # a different config
 2. **Judge (blind)** — the outputs are graded by the judge in `config.json` (`judgeModels`). The judge sees only the text, so grading is blind by construction. List **two models from different labs** to grade by **consensus** (PASS only if both agree) — the credible setting for ranking models.
 3. **Aggregate** — per contestant: pass-rate (quality), avg tokens, avg latency, generation cost, and **cost per accepted output** (gen cost ÷ passes) — the metric that should drive routing.
 
+## Evidence & determinism
+
+- **Every run writes immutable evidence** to `benchmark/runs/<timestamp>/run.json` — the config, the leaderboard, and every generation + its verdict. Models are stochastic, so a re-run is a *different* run; the evidence file lets you inspect or re-grade offline without paying to regenerate. (`benchmark/runs/` is gitignored.)
+- **The judge runs at `temperature: 0`** (pinned in `lib.mjs`) so identical output scores identically — grading is deterministic even though generation isn't. See `../METHODOLOGY.md`.
+
 ## The generator/judge split (don't break it)
 
 A contestant model must **never judge its own category** — self-preference bias. Keep `judgeModels` distinct from the contestant you care about, or use consensus across labs. This is why the benchmark separates the two roles.
