@@ -6,9 +6,9 @@ A structured way to score a live pricing page and return prioritized fixes. It g
 
 ## Why the second axis matters now
 
-Buyers increasingly ask ChatGPT, Perplexity, and Claude *"what's the best [category] tool and what does it cost?"* before they ever hit your site. If your pricing is trapped in an image, rendered only by JavaScript, gated behind "Contact us," or missing from the page's text, the AI **can't cite your price** — so it recommends and quotes the competitor whose pricing it *can* read. A pricing page that's invisible to agents silently loses deals you never see. This axis is the pricing-page complement to `ai-seo` and `schema`.
+Buyers increasingly ask ChatGPT, Perplexity, and Claude *"what's the best [category] tool and what does it cost?"* before they ever hit your site. If your price is trapped in an image, rendered only by JavaScript, or missing from the page's text, a text-fetching agent often can't read it — some agents render JS or fall back to vision/OCR, but many don't, so don't count on it. And a "Contact us" tier gives an agent no public number to quote at all. When the agent can't read your price, it recommends and quotes the competitor whose pricing it *can*. This axis is the pricing-page complement to `ai-seo` and `schema` — neither *guarantees* a citation, but an unreadable page rules one out.
 
-**The 30-second test — the "paste test":** paste the pricing URL into ChatGPT/Claude and ask *"What are the plans and prices?"* If it can't answer correctly and completely, an AI shopping on your buyer's behalf can't either. That failure *is* the finding.
+**The 30-second test — the "paste test":** give the pricing URL to a **browsing-capable** AI (Perplexity, ChatGPT with search, or Claude with web) — or paste the page's *rendered* text — and ask *"What are the plans and prices?"* If it can't answer correctly and completely, agents fetching your page the same way will struggle too. It's a heuristic, not proof every agent fails (some render JS or use vision), but a clean miss is a real finding worth fixing.
 
 ## The rubric
 
@@ -29,10 +29,10 @@ Score each dimension **Pass / Partial / Gap** (or 1–5 if you want a number). T
 
 | # | Dimension | Passing looks like | Common gaps |
 |---|---|---|---|
-| 7 | **Machine-readable pricing** | The real numbers are in the page's HTML/text | Price is in an image/SVG, JS-only render, a PDF, or "Contact sales" — an agent extracts nothing |
+| 7 | **Machine-readable pricing** | The real numbers are in the page's HTML/text | Price in an image/SVG, JS-only render, or a PDF — text-fetching crawlers get nothing reliable; "Contact sales" leaves no public number to quote |
 | 8 | **FAQ / objection coverage** | Extractable answers to "does it do X," "what's the limit," "can I cancel," "is there a free trial" | No FAQ, or answers only in a support portal an agent won't reach |
 | 9 | **Per-tier depth in text** | Each plan's inclusions, limits, and quotas stated in words | Differences shown only as checkmark columns in an image; limits unnamed |
-| 10 | **Structured data & extractability** | `Product`/`Offer` schema markup, clean semantic HTML, AI-bot crawlable, listed in `llms.txt` | No schema; pricing behind auth/interaction; AI bots blocked in robots.txt |
+| 10 | **Structured data & extractability** | `Product`/`Offer` schema markup, clean semantic HTML, AI search/agent bots allowed to crawl (`llms.txt` is a nice-to-have, not yet a standard) | No schema; pricing behind auth/interaction; AI *search* bots blocked in robots.txt |
 
 Dimensions 7 and 10 hand off to **`schema`** (Product/Offer JSON-LD) and **`ai-seo`** (extractability, AI-bot access, `llms.txt`) for implementation.
 
@@ -76,7 +76,7 @@ Dimensions 7 and 10 hand off to **`schema`** (Product/Offer JSON-LD) and **`ai-s
 - **"Contact us" everywhere** — sometimes right for true enterprise, but if *all* tiers hide price, both humans and agents bounce to a competitor with numbers. Show at least a starting price or a representative range.
 - **Checkmark-only tables** — feature differences shown only as ✓/✗ columns in an image or icon font. State the actual limits and inclusions in words.
 - **JS-only render / auth wall** — if the price only appears after interaction or login, no crawler or agent sees it.
-- **Blocked AI bots** — robots.txt disallows GPTBot/PerplexityBot/ClaudeBot, so the pricing never enters the models that recommend you (→ `ai-seo`).
+- **Blocked AI *search* bots** — the crawlers that feed AI *answers* are the search agents, not the training crawlers: OpenAI's `OAI-SearchBot`, Anthropic's `Claude-SearchBot` / `Claude-User`, Perplexity's `PerplexityBot`. Blocking `GPTBot` only opts out of model *training*, not ChatGPT Search — so check which bots your robots.txt actually blocks. (Bot access is `ai-seo`'s domain — hand it off there.)
 
 ## Related
 - `schema` — Product/Offer JSON-LD so machines read your tiers and prices.
