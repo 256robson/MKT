@@ -61,6 +61,20 @@ Two kinds of judge live here, and the README of each says which it is:
 
 Labeling a seed judge is fast because you label *by exception*: skim the AI-drafted verdicts, flip the ones you disagree with, and the answer key is now yours. Then run the calibration loop above, publish the number, and the judge graduates from seed to calibrated. Until then, treat a seed judge's output as directional, not authoritative.
 
+## Skill-activation (trigger / routing) evals
+
+Quality judges grade *what a skill produces*. A different failure mode dominates a **library of 50 skills**: the wrong skill fires. "Write ad copy" should route to `ad-creative`, not `copywriting`; "tighten this paragraph" to `copy-editing`; "add Product schema" to `schema`, not `ai-seo`. The user never sees the skill that *should* have run.
+
+`trigger-harness.mjs` tests this directly (pattern from [eliasstravik/skills](https://github.com/eliasstravik/skills), MIT): it reads every skill's `description` (the routing signal), asks a pinned (temp 0) judge which *one* skill should handle each labeled query, and reports **routing accuracy + the confusions** (which skill wrongly grabbed it). The test set (`triggers/router.json`) is deliberately loaded with **adjacent-skill negatives** — the near-misses that actually get mis-routed — plus a couple of `"none"` cases (a Python bug should route nowhere). A mis-route is a concrete instruction to sharpen a `description`.
+
+```bash
+node trigger-harness.mjs
+```
+
+## Eval-built: prove the need before you write
+
+Also from `eliasstravik/skills`: **a skill should be earned, not assumed.** Before writing a new skill, run its scenarios against a **no-skill baseline** and record the actual failures. If the baseline already succeeds, don't ship the skill. If it fails, every line you add should trace to a specific failure you observed — start from a bare core and let the failures earn the detail. Keep running fresh baseline rounds until one adds **zero new failure classes** (saturation = the need is proven). It's a strong editorial filter against bloat as the library grows — and it pairs with the adversarial *with-skill* pressure test (does the shipped skill hold under pressure), which is the other half.
+
 ## Build your own
 
 The pattern transfers to anything you can grade: write a rubric, hand-label a few dozen examples, measure agreement, sharpen, repeat. Swap hooks for headlines, subject lines, long-form, or a tool-call trajectory — the machinery is identical.

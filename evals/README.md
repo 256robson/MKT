@@ -32,6 +32,7 @@ evals/
 ├── pricing.json           # versioned model registry + $/1M-token prices (contestants & judges)
 ├── lib.mjs                # provider-agnostic model calls; loads judges; tokens + latency + cost
 ├── harness.mjs            # run a judge over its answer key → agreement % + confusion + cost/time
+├── trigger-harness.mjs    # skill-activation/routing eval → does the right skill fire? (triggers/router.json)
 ├── grade.mjs              # grade new inputs against any judge (BYO key)
 ├── benchmark.mjs          # rank models on a task by quality × cost × time (blind consensus)
 ├── benchmark/             # benchmark config + task sets  (see benchmark/README.md)

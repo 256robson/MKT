@@ -96,8 +96,8 @@ async function callProvider(provider, model, apiKey, system, user, baseURL, opts
   throw new Error(`Unknown provider "${provider}"`);
 }
 
-// Auto-detected judge call (harness/grade path). Returns { text, usage, ms }.
-async function callModel(system, user, opts = {}) {
+// Auto-detected model call (harness/grade/trigger path). Returns { text, usage, ms }.
+export async function callModel(system, user, opts = {}) {
   const p = autoProvider();
   const key = p.provider === "anthropic" ? process.env.ANTHROPIC_API_KEY : process.env.OPENAI_API_KEY;
   return callProvider(p.provider, p.model, key, system, user, undefined, opts);
