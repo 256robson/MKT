@@ -57,7 +57,17 @@ for (let i = 0; i < cases.length; i += BATCH) {
   const numbered = batch.map((c, j) => `${j + 1}. ${c.query}`).join("\n");
   const { text } = await callModel(system, `Route these requests:\n\n${numbered}`, { temperature: 0 });
   const results = parseJsonArray(text);
-  const byIdx = new Map(results.map((r) => [r.index, r]));
+  // Map by 1-based batch index, defensively: keep only in-range indices, first
+  // wins on duplicates, and count anything malformed/extra/out-of-range so a
+  // sloppy model response is visible rather than silently swallowed.
+  const byIdx = new Map();
+  let malformed = 0;
+  for (const r of results) {
+    const idx = r && r.index;
+    if (Number.isInteger(idx) && idx >= 1 && idx <= batch.length && !byIdx.has(idx)) byIdx.set(idx, r);
+    else malformed++;
+  }
+  if (malformed) console.error(dim(`  ⚠ ${malformed} malformed/duplicate/out-of-range result(s) ignored in this batch`));
   batch.forEach((c, j) => {
     const got = (byIdx.get(j + 1)?.skill ?? "").trim();
     graded++;
