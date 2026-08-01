@@ -2,7 +2,7 @@
 name: video
 description: "When the user wants to create, generate, or produce video content using AI tools or programmatic frameworks. Also use when the user mentions 'video production,' 'AI video,' 'Remotion,' 'Hyperframes,' 'HeyGen,' 'Synthesia,' 'Veo,' 'Sora,' 'Runway,' 'Kling,' 'Seedance,' 'Hailuo,' 'MiniMax,' 'Pika,' 'Hunyuan,' 'Wan,' 'video generation,' 'AI avatar,' 'talking head video,' 'programmatic video,' 'video template,' 'explainer video,' 'product demo video,' 'video pipeline,' 'copy this edit,' 'match this video style,' 'reverse-engineer this video,' 'edit like this reference,' or 'make me a video.' Use this for video creation, generation, and production workflows. For video content strategy and what to post, see social. For paid video ad creative, see ad-creative."
 metadata:
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 # Video
@@ -135,17 +135,46 @@ Generate original footage from text or image prompts. Use for B-roll, hero visua
 | **Runway Gen-4** | Up to 4K | ~10 sec/gen | Motion control, temporal consistency, edit-style workflows | $12-76/mo |
 | **Kling 2.5/3.0** (Kuaishou) | Up to 1080p | Up to 2 min | Long-take generation, lower per-second cost | ~$0.03/sec |
 | **Seedance** (ByteDance) | Up to 1080p | Short clips | Fast generation, strong motion fidelity at low cost, batch-friendly | Per-credit |
-| **Hailuo / MiniMax** | Up to 1080p | Short clips | Character consistency across shots | Per-credit |
+| **MiniMax-H3** | 2K | 4-15 sec | First/last-frame and reference-guided clips | Per-second |
 | **Pika 2.x** | 1080p | Short clips | Quick effects, image-to-video, lower bar to entry | Per-credit |
 | **Hunyuan Video / Wan 2** | 720p–1080p | Variable | Open-source self-hosted; full control, no API fees | Free (GPU) |
 
 **Quick picks**:
 - **Highest quality + audio**: Veo 3 or Sora 2
 - **Batch / volume / cost**: Kling, Seedance
-- **Character consistency across multiple shots**: Hailuo
+- **2K clips with first/last-frame or reference control**: MiniMax-H3
 - **Self-hosted, brand-controlled**: Hunyuan Video or Wan 2 (open weights)
 - **Storyboard → video workflow**: Runway, LTX Studio
 - **Image-to-video from a still you already have**: Kling, Pika, Runway
+
+### MiniMax-H3 v2 API
+
+Use MiniMax-H3 for 2K clips with text, first/last-frame, or reference-media control. Create requests require `model`, `content`, `resolution`, and `duration`; set `model` to `MiniMax-H3`, `resolution` to `2K`, and `duration` to an integer from 4 through 15 seconds. Optional fields are `ratio` and `callback_url`. The China endpoint also accepts `aigc_watermark`.
+
+| Region | Create Endpoint |
+|--------|-----------------|
+| Global | `https://api.minimax.io/v2/video_generation` |
+| China | `https://api.minimaxi.com/v2/video_generation` |
+
+The v2 task lifecycle uses Bearer authorization:
+
+| Action | Method | Path |
+|--------|--------|------|
+| Create | `POST` | `/v2/video_generation` |
+| Query one task | `GET` | `/v2/query/video_generation/{task_id}` |
+| List tasks | `GET` | `/v2/query/video_generation` |
+| Delete | `DELETE` | `/v2/video_generation/{task_id}` |
+
+Build `content` from these supported types and roles:
+
+- Include required `text` content, up to 7,000 characters.
+- Use `image_url` with `first_frame`, `last_frame`, or `reference_image`.
+- Use `video_url` with `reference_video`, and `audio_url` with `reference_audio`.
+- A `reference_audio` item requires an image or video reference.
+- Do not combine first/last-frame roles with reference-media roles in one request.
+- Keep the complete request body at or below 64 MB.
+
+Supported ratios are `adaptive`, `21:9`, `16:9`, `4:3`, `1:1`, `3:4`, and `9:16`.
 
 ### Prompting for Video Models
 

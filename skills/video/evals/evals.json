@@ -98,6 +98,21 @@
         "Applies the originality guardrail — copies editing grammar applied to the user's own footage, never the reference's footage/script/music"
       ],
       "files": []
+    },
+    {
+      "id": 8,
+      "prompt": "Use MiniMax-H3 to turn a product opening frame and closing frame into an 8-second 2K 16:9 video. Show the API flow and constraints for both global and China accounts, including how to monitor and delete the task.",
+      "expected_output": "Should use the MiniMax-H3 v2 API rather than a legacy generation flow. Should identify the global create endpoint as https://api.minimax.io/v2/video_generation and the China create endpoint as https://api.minimaxi.com/v2/video_generation, with Bearer authorization. Should explain that POST /v2/video_generation requires model, content, resolution, and duration; model is MiniMax-H3, resolution is 2K only, and duration must be an integer from 4 through 15 seconds. Should represent the opening and closing images with image_url content using first_frame and last_frame roles, include required text content, and note that first/last-frame roles cannot be mixed with reference-media roles. Should list GET /v2/query/video_generation/{task_id} for one task, GET /v2/query/video_generation for task listing, and DELETE /v2/video_generation/{task_id} for deletion. Should use ratio 16:9 and note that aigc_watermark is China-only.",
+      "assertions": [
+        "Uses the MiniMax-H3 v2 create endpoint for the correct region",
+        "Includes all required create fields and Bearer authorization",
+        "Enforces 2K output and an integer duration from 4 through 15 seconds",
+        "Uses first_frame and last_frame content roles with required text content",
+        "Does not mix frame roles with reference-media roles",
+        "Explains query, list, and delete task operations",
+        "Treats aigc_watermark as China-only"
+      ],
+      "files": []
     }
   ]
 }
