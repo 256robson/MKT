@@ -52,9 +52,13 @@ Current versions of all skills. Agents can compare against local versions to che
 | site-architecture | 2.0.0 | 2026-05-05 |
 | sms | 1.0.0 | 2026-05-21 |
 | social | 2.2.0 | 2026-07-09 |
-| video | 2.1.0 | 2026-07-14 |
+| video | 2.2.0 | 2026-08-01 |
 
 ## Recent Changes
+
+### 2.10.1 (2026-08-01)
+
+- **video** (2.1.0 → 2.2.0): refreshed MiniMax-H3 guidance for the v2 create, query, list, and delete lifecycle; both regional endpoints; required create fields; 2K-only output; integer 4-15 second duration; supported ratios; and first/last-frame plus reference image, video, and audio role constraints. Added eval coverage for the regional API flow and task lifecycle.
 
 ### 2.10.0 (2026-07-22)
 
