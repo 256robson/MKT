@@ -1,0 +1,84 @@
+{
+  "skill_name": "geo-dual-frontier",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We keep hearing about GEO and SEO as separate things. Can you give me an operating method to make one piece of content rank on Google AND get cited by ChatGPT and Perplexity at the same time? We're a hotel with a wedding banquet hall.",
+      "expected_output": "Should introduce the dual-frontier method: one asset serving both the search-frontier (Google ranking) and the answer-frontier (AI citation). Should explain the overlap (clear, factual, structured, sourced content rewards both) and the divergence (Google wants E-E-A-T/links; AI wants extractable passages). Should present the 4-step workflow: (1) dual-frontier keyword selection scoring Demand × AI-Query-Fit, (2) dual-frontier content structure with a 40-60 word answer block + depth, (3) three-layer schema, (4) dual-line validation. Should reference ai-seo for deep theory. Should not recommend writing a separate AI-only version (Google spam risk).",
+      "assertions": [
+        "Frames it as one asset for two fronts (SEO + GEO), not two separate efforts",
+        "Explains the overlap and divergence between Google and AI selection",
+        "Presents the 4-step workflow (keyword selection, content structure, schema, validation)",
+        "Recommends a 40-60 word answer block plus long-form depth",
+        "Warns against a separate AI-only version (scaled-content-abuse risk)",
+        "References ai-seo for background theory"
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "How do I decide which keywords are worth the dual-frontier treatment versus just normal SEO?",
+      "expected_output": "Should describe the dual-frontier keyword selection matrix: score each query on Demand (search volume, difficulty, business value) and AI-Query-Fit (natural-language question, comparison/definition/how-to/pricing intent, confirmed by asking the AI directly). Multiply for a Dual score. Should give decision rules: Dual ≥ 16 = full treatment; one axis strong = build for strong axis and add minimum structure for the weak one; both weak = skip or fold into a cluster page. Should mention fan-out / topical cluster coverage.",
+      "assertions": [
+        "Uses a two-axis scoring (Demand × AI-Query-Fit)",
+        "Explains how to measure each axis",
+        "Gives concrete decision rules based on the Dual score",
+        "Recommends validating AI-Query-Fit by asking the AI directly",
+        "Mentions fan-out / topical cluster coverage"
+      ],
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I wrote a long blog post about our wedding banquet pricing. It ranks okay but AI assistants never cite us. What should I change?",
+      "expected_output": "Should diagnose the missing answer block and extraction structure. Should recommend adding a 40-60 word direct answer block at the top answering the exact query (snippet + extraction bait), keeping the long-form depth below for ranking and AI context. Should add FAQ schema, comparison tables, and real statistics with dated sources. Should NOT suggest rewriting a separate AI-only version. Should point to the three-layer schema (JSON-LD, llms.txt/pricing.md, entity presence) and dual-line validation to confirm the fix worked.",
+      "assertions": [
+        "Identifies the missing answer block as the core issue",
+        "Recommends a 40-60 word answer block at the top + keep depth below",
+        "Adds FAQ schema / tables / sourced statistics",
+        "Does not recommend a separate AI-only rewrite",
+        "Points to three-layer schema and dual-line validation"
+      ],
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "What's this 'three-layer schema' you mention for making content machine-readable for AI? Do I need llms.txt and OKF?",
+      "expected_output": "Should explain the three layers: Layer 1 on-page JSON-LD (Article/FAQPage/HowTo/Product) for Google rich results; Layer 2 machine-readable files (llms.txt, /pricing.md, OKF bundle) for non-Google AI engines and buying agents; Layer 3 entity & third-party presence (Google Business Profile, Wikipedia, reviews) that drives AI recommendations not just citations. Should clarify Google does not require llms.txt/OKF for AI Overviews but they help other engines without harming Google. Should give a rollout order: Layer 1 first, then 2, then 3. Should reference the schema skill for Layer 1 implementation.",
+      "assertions": [
+        "Explains all three layers distinctly",
+        "Clarifies llms.txt/OKF are not required by Google but help other engines",
+        "Distinguishes citations from recommendations (Layer 3)",
+        "Gives a rollout order (1 → 2 → 3)",
+        "References the schema skill for JSON-LD"
+      ],
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "How do I prove our dual-frontier content is actually working? We only look at Google rankings today.",
+      "expected_output": "Should introduce dual-line validation: measure the SEO line (ranking position, GSC impressions/clicks, featured snippets) AND the GEO line (cited in ChatGPT/Perplexity/AI Overviews, which page, share of voice via Peec AI/Otterly/ZipTie). Should describe a monthly cadence: top 20 queries, record both lines, flag queries where one line lags and apply a targeted fix. Should warn about the attribution blind spot (AI-influenced visits often show as branded/direct, not referral). Should note you can rank #1 yet be invisible in AI answers.",
+      "assertions": [
+        "Measures both SEO line and GEO line, not just rankings",
+        "Names concrete GEO measurement tools or manual checks",
+        "Describes a recurring cadence with a scoring sheet",
+        "Recommends fixing the weaker line with targeted changes",
+        "Warns about the attribution blind spot and rank-without-citation risk"
+      ],
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "Can we just generate a bunch of AI-optimized spun articles with made-up stats to rank and get cited fast?",
+      "expected_output": "Should firmly reject fabricated stats and spun content. Should explain that fabricated numbers break both Google E-E-A-T and AI trust simultaneously, and that keyword stuffing actively reduces AI visibility ~10%. Should explain that separate 'AI-only' spun variants risk Google's scaled-content-abuse spam policy. Should reframe toward the legitimate dual-frontier method: one real, sourced, structured document serving both fronts, with real scarcity only and AI crawlers allowed in robots.txt.",
+      "assertions": [
+        "Rejects fabricated stats and spun/AI-only content",
+        "Explains fabricated claims fail both Google and AI trust",
+        "Warns about scaled-content-abuse spam policy for AI-only variants",
+        "Notes keyword stuffing reduces AI visibility",
+        "Reframes toward the legitimate one-document dual-frontier method"
+      ],
+      "files": []
+    }
+  ]
+}
