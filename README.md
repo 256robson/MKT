@@ -60,6 +60,7 @@ See each skill's **Related Skills** section for the full dependency map.
 | [ad-creative](skills/ad-creative/) | When the user wants to generate, iterate, or scale ad creative — headlines, descriptions, primary text, or full ad... |
 | [ads](skills/ads/) | When the user wants help with paid advertising campaigns on Google Ads, Meta (Facebook/Instagram), LinkedIn, Twitter/X,... |
 | [ai-seo](skills/ai-seo/) | When the user wants to optimize content for AI search engines, get cited by LLMs, or appear in AI-generated answers.... |
+| [geo-dual-frontier](skills/geo-dual-frontier/) | When the user wants one piece of content to rank on Google AND get cited by AI assistants (ChatGPT, Perplexity, AI Overviews) at the same time — the dual-frontier operating workflow.... |
 | [analytics](skills/analytics/) | When the user wants to set up, improve, or audit analytics tracking and measurement. Also use when the user mentions... |
 | [aso](skills/aso/) | When the user wants to audit or optimize an App Store or Google Play listing. Also use when the user mentions 'ASO... |
 | [attribution](skills/attribution/) | When the user wants to figure out which marketing actually drives conversions and revenue, choose or interpret an... |
@@ -285,6 +286,7 @@ You can also invoke skills directly:
 ### SEO & Discovery
 - `seo-audit` - Technical and on-page SEO
 - `ai-seo` - AI search optimization (AEO, GEO, LLMO)
+- `geo-dual-frontier` - Make one asset rank on Google AND get cited by AI (dual-frontier workflow)
 - `programmatic-seo` - Scaled page generation
 - `site-architecture` - Page hierarchy, navigation, URL structure
 - `competitors` - Comparison and alternative pages
