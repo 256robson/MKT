@@ -5,6 +5,10 @@
 
 SKILLS_DIR="skills"
 SKILLS_REF_DIR="/tmp/agentskills/skills-ref"
+# Capture the script's own directory up front. The install block below does
+# `cd` into SKILLS_REF_DIR, so we cannot rely on `cd "$(dirname "$0")"` later
+# (that resolves relative to the *current* dir at call time, not the repo root).
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 echo "🔍 Validating Skills Using Official skills-ref Library"
 echo "========================================================"
@@ -39,7 +43,7 @@ fi
 source "$SKILLS_REF_DIR/.venv/bin/activate"
 
 # Return to the original directory
-cd "$(dirname "$0")"
+cd "$SCRIPT_DIR"
 
 # Track results
 PASSED=0
