@@ -42,6 +42,8 @@ Google and AI engines diverge in *selection*, but converge in *what they reward*
 
 **Implication:** write one document with (a) a tight answer block up top (snippet + extraction bait) and (b) comprehensive, sourced depth below (ranks + gives AI confident context). Do **not** write a separate "AI version" — that risks Google's scaled-content-abuse spam policy.
 
+> **Evidence base (validated by 2026 research):** Google's March 2026 core update rewarded the *same* signals AI engines prefer to cite — original research (+22% visibility), penalized thin AI-spin content, and doubled down on E-E-A-T — effectively confirming the "one playbook, two channels" convergence. Princeton GEO research (Aggarwal et al., KDD 2024) measured concrete lifts: statistics **+32–41%**, cited sources **+30%**, expert quotations **+41%** in AI citation rates. **Honest nuance:** Google's June 2026 official guide states you do *not* need `llms.txt`, AI-specific markup, or AI-only rewrites — "optimizing for generative AI search is still SEO." So the durable core is good SEO + structured, citable, source-backed content; machine-readable files (Step 3, Layer 2) are a bonus, not a requirement.
+
 ---
 
 ## Workflow
@@ -96,22 +98,20 @@ The same prose serves both fronts — no AI-only rewrite.
 
 > Full template with annotated examples: [references/dual-frontier-content-template.md](references/dual-frontier-content-template.md)
 
-### Step 3 — Three-Layer Schema (三层Schema)
+### Step 3 — Make Content Machine-Readable (三层, 核心在前)
 
-Make the content machine-readable on three layers so both Google and AI can parse it:
+The durable core that *both* Google and AI reward is **structured, citable, source-backed content** — not special AI files. Prioritize in this order:
 
-**Layer 1 — On-page JSON-LD (for Google rich results):**
-`Article`/`BlogPosting`, `FAQPage`, `HowTo`, `Product`. Content with proper schema shows 30–40% higher AI visibility on non-Google engines. For implementation, use the **schema** skill.
+**Layer 1 — On-page JSON-LD (standard SEO, do this first):**
+`Article`/`BlogPosting`, `FAQPage`, `HowTo`, `Product`. Proper schema + clean HTML is the price of entry for both Google rich results *and* AI retrieval — AI Overviews pull from the same indexed web Google already ranks. For implementation, use the **schema** skill.
 
-**Layer 2 — Machine-readable files (for AI engines & buying agents):**
-- `/llms.txt` — concise context file pointing AI to key pages (see llmstxt.org).
-- `/pricing.md` or `/pricing.txt` — structured facts/pricing parseable without JS or login walls. Agents increasingly compare products before a human visits; opaque pricing gets filtered out.
-- `/okf/` — Open Knowledge Format bundle (Google-backed, v0.1) for agent-readable site content.
+**Layer 2 — Optional machine-readable files (nice-to-have, NOT required):**
+- `/llms.txt` (llmstxt.org) and `/pricing.md` can help buying agents and power users, but **Google's June 2026 official guide explicitly states these are not needed** for AI visibility — good SEO + crawlability already covers it. Treat as a bonus, not core; don't over-invest before Layer 1 and Layer 3 are solid.
 
 **Layer 3 — Entity & third-party presence (drives AI *recommendations*, not just citations):**
-Google Business Profile, accurate Wikipedia/entity data, review platforms (G2, Trustpilot), authentic community participation. Citation ≠ recommendation — recommendations are governed by web-wide consensus (reviews, forums, press). See `ai-seo` → citations-vs-recommendations.
+Google Business Profile, consistent entity naming, review platforms (G2, Trustpilot), authentic community participation. Citation ≠ recommendation — recommendations are governed by web-wide consensus (reviews, forums, press). See `ai-seo` → citations-vs-recommendations.
 
-> Implementation paths for each layer: [references/three-layer-schema.md](references/three-layer-schema.md)
+> Evidence: Google March 2026 core update rewarded the same signals AI cites (original research +22%, E-E-A-T emphasis); Princeton GEO research (KDD 2024) measured stats +32–41%, sources +30%, quotes +41%. Google June 2026: "optimizing for generative AI search is still SEO" — no special markup required. Implementation paths: [references/three-layer-schema.md](references/three-layer-schema.md)
 
 ### Step 4 — Dual-Line Validation (双线验证)
 
