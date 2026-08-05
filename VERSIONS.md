@@ -9,7 +9,7 @@ Current versions of all skills. Agents can compare against local versions to che
 | ai-seo | 2.2.0 | 2026-07-09 |
 | analytics | 2.0.1 | 2026-07-22 |
 | aso | 2.0.0 | 2026-05-05 |
-| attribution | 1.1.0 | 2026-07-23 |
+| attribution | 1.1.1 | 2026-08-05 |
 | churn-prevention | 2.0.0 | 2026-05-05 |
 | co-marketing | 2.0.0 | 2026-05-05 |
 | cold-email | 2.0.0 | 2026-05-05 |
@@ -25,7 +25,7 @@ Current versions of all skills. Agents can compare against local versions to che
 | emails | 2.0.0 | 2026-05-05 |
 | free-tools | 2.0.0 | 2026-05-05 |
 | image | 2.0.1 | 2026-05-18 |
-| influencer-marketing | 1.0.0 | 2026-07-15 |
+| influencer-marketing | 1.0.1 | 2026-08-05 |
 | launch | 2.0.1 | 2026-06-16 |
 | lead-magnets | 2.0.0 | 2026-05-05 |
 | marketing-council | 1.0.0 | 2026-07-06 |
@@ -55,6 +55,11 @@ Current versions of all skills. Agents can compare against local versions to che
 | video | 2.1.0 | 2026-07-14 |
 
 ## Recent Changes
+
+### 2.10.1 (2026-08-05)
+
+- **attribution** (1.1.0 → 1.1.1): accuracy pass. Clarifies that Google Ads/GA4 retired rule-based models (first-click / linear / time-decay / position-based) — teach them as concepts / DIY on own path data, not Google dropdowns. Updates DDA volume guidance to Google's current ~200 conversions / ~2,000 interactions recommendation. Fixes "six models" wording (last non-direct = last-touch variant). Tightens ghost-ads definition; clarifies Calendly only accepts standard UTMs/`salesforce_uuid` (map anon id into a UTM). Adds click-MTA demand-capture bias, survey-discount + no platform-gap-multiplier guidance, and a short triangulated override / insertion note in `measurement-paradigms.md`. Eval #2 updated accordingly.
+- **influencer-marketing** (1.0.0 → 1.0.1): Related Skills / measurement section now hand branded-search & direct blind spots to **attribution** (keep **ai-seo** for AI-search discovery).
 
 ### 2.10.0 (2026-07-22)
 
