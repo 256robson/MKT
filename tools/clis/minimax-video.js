@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 
-// MiniMax (Hailuo) text-to-video CLI for marketing footage generation.
-// Text-to-video is an async flow: submit a generation task, poll for status,
-// then retrieve the finished file. This CLI wraps those three steps.
+// MiniMax text-to-video and image-to-video CLI for marketing footage generation.
 
 const API_KEY = process.env.MINIMAX_API_KEY
 
@@ -13,18 +11,18 @@ const REGIONS = {
   cn_zh: 'https://api.minimaxi.com',
 }
 
-// Text-to-video models. Hailuo 2.3 is the current default.
-const T2V_MODELS = [
+const VIDEO_MODELS = [
+  'MiniMax-H3',
   'MiniMax-Hailuo-2.3',
   'MiniMax-Hailuo-2.3-Fast',
   'MiniMax-Hailuo-02',
   'T2V-01-Director',
   'T2V-01',
 ]
-const DEFAULT_MODEL = 'MiniMax-Hailuo-2.3'
+const DEFAULT_MODEL = 'MiniMax-H3'
 
-// Request fields accepted by the text-to-video operation.
-const T2V_FIELDS = ['model', 'prompt', 'prompt_optimizer', 'fast_pretreatment', 'duration', 'resolution', 'callback_url']
+const V2_FIELDS = ['model', 'content', 'resolution', 'duration', 'ratio', 'callback_url']
+const V1_FIELDS = ['model', 'prompt', 'first_frame_image', 'prompt_optimizer', 'fast_pretreatment', 'duration', 'resolution', 'callback_url']
 
 function parseArgs(argv) {
   const result = { _: [] }
@@ -91,6 +89,19 @@ function numeric(value) {
   return Number.isNaN(n) ? value : n
 }
 
+function videoApiVersion(model) {
+  const version = args['api-version'] || (model === 'MiniMax-H3' ? 'v2' : 'v1')
+  if (!['v1', 'v2'].includes(version)) throw new Error('--api-version must be v1 or v2')
+  return version
+}
+
+function v2Content(prompt) {
+  const content = [{ type: 'text', text: prompt }]
+  if (args['first-frame-image']) content.push({ type: 'image_url', image_url: { url: args['first-frame-image'] }, role: 'first_frame' })
+  if (args['last-frame-image']) content.push({ type: 'image_url', image_url: { url: args['last-frame-image'] }, role: 'last_frame' })
+  return content
+}
+
 async function main() {
   let result
 
@@ -100,19 +111,52 @@ async function main() {
         case 'generate': {
           const prompt = args.prompt
           if (!prompt) { result = { error: '--prompt required' }; break }
-          const body = { model: args.model || DEFAULT_MODEL, prompt }
-          if (args['prompt-optimizer'] !== undefined) body.prompt_optimizer = args['prompt-optimizer'] !== 'false'
-          if (args['fast-pretreatment'] !== undefined) body.fast_pretreatment = args['fast-pretreatment'] !== 'false'
-          if (args.duration !== undefined) body.duration = numeric(args.duration)
-          if (args.resolution) body.resolution = args.resolution
-          if (args['callback-url']) body.callback_url = args['callback-url']
-          result = await api('POST', '/v1/video_generation', body)
+          const model = args.model || DEFAULT_MODEL
+          const version = videoApiVersion(model)
+          if (version === 'v2') {
+            const hasFrame = args['first-frame-image'] || args['last-frame-image']
+            const body = {
+              model,
+              content: v2Content(prompt),
+              resolution: args.resolution || '2K',
+              duration: numeric(args.duration || 5),
+              ratio: args.ratio || (hasFrame ? 'adaptive' : '16:9'),
+            }
+            if (args['callback-url']) body.callback_url = args['callback-url']
+            result = await api('POST', '/v2/video_generation', body)
+          } else {
+            const body = { model, prompt }
+            if (args['first-frame-image']) body.first_frame_image = args['first-frame-image']
+            if (args['prompt-optimizer'] !== undefined) body.prompt_optimizer = args['prompt-optimizer'] !== 'false'
+            if (args['fast-pretreatment'] !== undefined) body.fast_pretreatment = args['fast-pretreatment'] !== 'false'
+            if (args.duration !== undefined) body.duration = numeric(args.duration)
+            if (args.resolution) body.resolution = args.resolution
+            if (args['callback-url']) body.callback_url = args['callback-url']
+            result = await api('POST', '/v1/video_generation', body)
+          }
           break
         }
         case 'status': {
           const taskId = args['task-id']
           if (!taskId) { result = { error: '--task-id required' }; break }
-          result = await api('GET', `/v1/query/video_generation?task_id=${encodeURIComponent(taskId)}`)
+          const version = videoApiVersion(args.model || DEFAULT_MODEL)
+          const path = version === 'v2'
+            ? `/v2/query/video_generation/${encodeURIComponent(taskId)}`
+            : `/v1/query/video_generation?task_id=${encodeURIComponent(taskId)}`
+          result = await api('GET', path)
+          break
+        }
+        case 'list': {
+          const query = new URLSearchParams()
+          if (args['page-num']) query.set('page_num', args['page-num'])
+          if (args['page-size']) query.set('page_size', args['page-size'])
+          result = await api('GET', `/v2/query/video_generation${query.size ? `?${query}` : ''}`)
+          break
+        }
+        case 'delete': {
+          const taskId = args['task-id']
+          if (!taskId) { result = { error: '--task-id required' }; break }
+          result = await api('DELETE', `/v2/video_generation/${encodeURIComponent(taskId)}`)
           break
         }
         case 'download': {
@@ -122,22 +166,22 @@ async function main() {
           break
         }
         default:
-          result = { error: 'Unknown video subcommand. Use: generate, status, download' }
+          result = { error: 'Unknown video subcommand. Use: generate, status, list, delete, download' }
       }
       break
 
     case 'models':
-      result = { default: DEFAULT_MODEL, text_to_video: T2V_MODELS }
+      result = { default: DEFAULT_MODEL, video: VIDEO_MODELS }
       break
 
     default:
       result = {
         error: 'Unknown command',
         usage: {
-          video: 'video [generate --prompt <text> [--model <id>] [--duration <n>] [--resolution <res>] [--prompt-optimizer <bool>] [--fast-pretreatment <bool>] [--callback-url <url>] | status --task-id <id> | download --file-id <id>]',
+          video: 'video [generate --prompt <text> [--model <id>] [--first-frame-image <url>] [--last-frame-image <url>] [--duration <n>] [--resolution <res>] [--ratio <ratio>] [--callback-url <url>] | status --task-id <id> | list | delete --task-id <id> | download --file-id <id>]',
           models: 'models',
-          options: '--region <global_en|cn_zh> --dry-run',
-          fields: T2V_FIELDS,
+          options: '--region <global_en|cn_zh> --api-version <v1|v2> --dry-run',
+          fields: { v2: V2_FIELDS, v1: V1_FIELDS },
         },
       }
   }

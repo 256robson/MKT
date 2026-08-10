@@ -1,12 +1,12 @@
 # MiniMax (Hailuo)
 
-AI video generation platform. Generate original marketing footage from text prompts — B-roll, hero shots, and scenes you can't practically film — with strong character consistency across clips. Powered by the Hailuo video models.
+AI video generation platform. Generate original marketing footage from text or image prompts — B-roll, hero shots, and scenes you can't practically film — with strong character consistency across clips.
 
 ## Capabilities
 
 | Integration | Available | Notes |
 |-------------|-----------|-------|
-| API | Yes | REST API for text-to-video generation, task polling, and file retrieval |
+| API | Yes | REST API for text-to-video and image-to-video generation, task management, and file retrieval |
 | MCP | - | - |
 | CLI | Yes | [minimax-video.js](../clis/minimax-video.js) — zero-dependency, single-file |
 | SDK | - | - |
@@ -31,11 +31,12 @@ Select the region with `--region <global_en|cn_zh>` on the CLI (or the `MINIMAX_
 
 ## Models
 
-Text-to-video is an asynchronous flow: submit a generation task, poll until it completes, then retrieve the finished file.
+Video generation is asynchronous: submit a task, then poll until it completes. The v2 response provides the output URL directly; v1 tasks use file retrieval.
 
 | Model | Notes |
 |-------|-------|
-| `MiniMax-Hailuo-2.3` | Current default — highest fidelity |
+| `MiniMax-H3` | Current default — v2 text, image, and reference inputs with 2K output |
+| `MiniMax-Hailuo-2.3` | v1 high-fidelity generation |
 | `MiniMax-Hailuo-2.3-Fast` | Faster generation, lower cost |
 | `MiniMax-Hailuo-02` | Previous-generation Hailuo |
 | `T2V-01-Director` | Director model with camera-movement control |
@@ -47,17 +48,23 @@ Text-to-video is an asynchronous flow: submit a generation task, poll until it c
 # Preview any request without sending it (key is masked)
 node tools/clis/minimax-video.js video generate \
   --prompt "A close-up of hands typing on a laptop, warm office lighting, camera slowly pulls back" \
-  --duration 6 --resolution 1080P --prompt-optimizer true --dry-run
+  --duration 6 --resolution 2K --ratio 16:9 --dry-run
 
 # 1. Submit a generation task → returns task_id
 node tools/clis/minimax-video.js video generate \
   --prompt "A close-up of hands typing on a laptop, warm office lighting" \
-  --model MiniMax-Hailuo-2.3 --duration 6 --resolution 1080P
+  --model MiniMax-H3 --duration 6 --resolution 2K --ratio 16:9
 
-# 2. Poll the task until status is complete → returns file_id when done
+# Use a first-frame image for image-to-video
+node tools/clis/minimax-video.js video generate \
+  --prompt "The camera slowly pushes toward the product" \
+  --first-frame-image https://example.com/product.png --duration 6
+
+# 2. Poll the v2 task until status is succeeded → returns task.content.url
 node tools/clis/minimax-video.js video status --task-id TASK_ID
 
-# 3. Retrieve the finished video file
+# Use --api-version v1 for status and file retrieval with v1 models
+node tools/clis/minimax-video.js video status --task-id TASK_ID --api-version v1
 node tools/clis/minimax-video.js video download --file-id FILE_ID
 
 # List available text-to-video models
@@ -69,37 +76,40 @@ node tools/clis/minimax-video.js models
 ### Submit a Text-to-Video Task
 
 ```bash
-curl -X POST https://api.minimax.io/v1/video_generation \
+curl -X POST https://api.minimax.io/v2/video_generation \
   -H "Authorization: Bearer $MINIMAX_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "MiniMax-Hailuo-2.3",
-    "prompt": "A close-up of hands typing on a laptop, warm office lighting",
+    "model": "MiniMax-H3",
+    "content": [{
+      "type": "text",
+      "text": "A close-up of hands typing on a laptop, warm office lighting"
+    }],
     "duration": 6,
-    "resolution": "1080P",
-    "prompt_optimizer": true
+    "resolution": "2K",
+    "ratio": "16:9"
   }'
 ```
 
-Accepted request fields: `model`, `prompt`, `prompt_optimizer`, `fast_pretreatment`, `duration`, `resolution`, `callback_url`.
+Accepted v2 request fields: `model`, `content`, `resolution`, `duration`, `ratio`, `callback_url`. Add `image_url` content with a `first_frame` or `last_frame` role for image-to-video.
 
 ### Poll the Task
 
 ```bash
-curl "https://api.minimax.io/v1/query/video_generation?task_id=TASK_ID" \
+curl "https://api.minimax.io/v2/query/video_generation/TASK_ID" \
   -H "Authorization: Bearer $MINIMAX_API_KEY"
 ```
 
-Returns `status` and, once finished, a `file_id`.
+Returns `task.status` and, once finished, `task.content.url`.
 
-### Retrieve the File
+### v1 File Retrieval
 
 ```bash
 curl "https://api.minimax.io/v1/files/retrieve?file_id=FILE_ID" \
   -H "Authorization: Bearer $MINIMAX_API_KEY"
 ```
 
-Response fields across these operations: `task_id`, `status`, `file_id`, `base_resp.status_code`.
+The v1 API remains available for Hailuo and T2V models. It returns `task_id`, `status`, and `file_id`; retrieve the file from `/v1/files/retrieve`.
 
 ## Common Marketing Use Cases
 
