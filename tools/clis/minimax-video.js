@@ -18,6 +18,9 @@ const VIDEO_MODELS = [
   'MiniMax-Hailuo-02',
   'T2V-01-Director',
   'T2V-01',
+  'I2V-01-Director',
+  'I2V-01-live',
+  'I2V-01',
 ]
 const DEFAULT_MODEL = 'MiniMax-H3'
 
@@ -109,10 +112,14 @@ async function main() {
     case 'video':
       switch (sub) {
         case 'generate': {
-          const prompt = args.prompt
-          if (!prompt) { result = { error: '--prompt required' }; break }
           const model = args.model || DEFAULT_MODEL
           const version = videoApiVersion(model)
+          const prompt = args.prompt
+          if (version === 'v2' && !prompt) { result = { error: '--prompt required' }; break }
+          if (version === 'v1' && !prompt && !args['first-frame-image']) {
+            result = { error: '--prompt or --first-frame-image required' }
+            break
+          }
           if (version === 'v2') {
             const hasFrame = args['first-frame-image'] || args['last-frame-image']
             const body = {
@@ -125,7 +132,8 @@ async function main() {
             if (args['callback-url']) body.callback_url = args['callback-url']
             result = await api('POST', '/v2/video_generation', body)
           } else {
-            const body = { model, prompt }
+            const body = { model }
+            if (prompt) body.prompt = prompt
             if (args['first-frame-image']) body.first_frame_image = args['first-frame-image']
             if (args['prompt-optimizer'] !== undefined) body.prompt_optimizer = args['prompt-optimizer'] !== 'false'
             if (args['fast-pretreatment'] !== undefined) body.fast_pretreatment = args['fast-pretreatment'] !== 'false'

@@ -41,6 +41,9 @@ Video generation is asynchronous: submit a task, then poll until it completes. T
 | `MiniMax-Hailuo-02` | Previous-generation Hailuo |
 | `T2V-01-Director` | Director model with camera-movement control |
 | `T2V-01` | Base text-to-video model |
+| `I2V-01-Director` | Director image-to-video model with camera-movement control |
+| `I2V-01-live` | Image-to-video model for animated illustrations |
+| `I2V-01` | Base image-to-video model |
 
 ## CLI Quick Start
 
@@ -60,6 +63,10 @@ node tools/clis/minimax-video.js video generate \
   --prompt "The camera slowly pushes toward the product" \
   --first-frame-image https://example.com/product.png --duration 6
 
+# Legacy v1 image-to-video accepts a first frame without a prompt
+node tools/clis/minimax-video.js video generate \
+  --model I2V-01 --first-frame-image https://example.com/product.png
+
 # 2. Poll the v2 task until status is succeeded → returns task.content.url
 node tools/clis/minimax-video.js video status --task-id TASK_ID
 
@@ -67,7 +74,7 @@ node tools/clis/minimax-video.js video status --task-id TASK_ID
 node tools/clis/minimax-video.js video status --task-id TASK_ID --api-version v1
 node tools/clis/minimax-video.js video download --file-id FILE_ID
 
-# List available text-to-video models
+# List available video models
 node tools/clis/minimax-video.js models
 ```
 
@@ -109,7 +116,7 @@ curl "https://api.minimax.io/v1/files/retrieve?file_id=FILE_ID" \
   -H "Authorization: Bearer $MINIMAX_API_KEY"
 ```
 
-The v1 API remains available for Hailuo and T2V models. It returns `task_id`, `status`, and `file_id`; retrieve the file from `/v1/files/retrieve`.
+The v1 API remains available for Hailuo, T2V, and I2V models. It returns `task_id`, `status`, and `file_id`; retrieve the file from `/v1/files/retrieve`.
 
 ## Common Marketing Use Cases
 
