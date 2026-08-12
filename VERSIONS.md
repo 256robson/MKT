@@ -58,7 +58,7 @@ Current versions of all skills. Agents can compare against local versions to che
 
 ### 2.10.1 (2026-08-12)
 
-- Added a zero-dependency MiniMax text-to-image CLI and integration guide with global and China endpoints, documented request validation, URL/base64 response normalization, dry-run support, and focused tests.
+- Added a zero-dependency MiniMax image CLI and integration guide with global and China endpoints, text and character-reference generation, current image models, URL/base64 response normalization, dry-run support, and focused tests.
 
 ### 2.10.0 (2026-07-22)
 

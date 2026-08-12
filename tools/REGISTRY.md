@@ -457,7 +457,7 @@ Generate original marketing images from text prompts.
 
 | Tool | Best For | Notes |
 |------|----------|-------|
-| **minimax-image** | Regional text-to-image generation | CLI supports URL and base64 output |
+| **minimax-image** | Regional text and reference-image generation | CLI supports URL and base64 output |
 
 **Agent recommendation**: Use MiniMax Image for synchronous marketing-image generation with explicit dimensions or common aspect ratios.
 

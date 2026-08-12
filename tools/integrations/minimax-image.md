@@ -1,12 +1,12 @@
 # MiniMax Image
 
-Generate marketing images from text prompts through the MiniMax image API.
+Generate marketing images from text prompts or character reference images through the MiniMax image API.
 
 ## Capabilities
 
 | Integration | Available | Notes |
 |-------------|-----------|-------|
-| API | Yes | Synchronous text-to-image generation with URL or base64 output |
+| API | Yes | Synchronous text-to-image and reference-image generation with URL or base64 output |
 | MCP | - | - |
 | CLI | Yes | [minimax-image.js](../clis/minimax-image.js) — zero-dependency, single-file |
 | SDK | - | - |
@@ -28,12 +28,13 @@ The CLI defaults to `global_en`. Select a region with `--region`, set `MINIMAX_R
 
 ## Model and Request
 
-`image-01` is the text-to-image model. A request requires `model` and `prompt`; prompts can contain up to 1,500 characters.
+The API supports `image-01` (default) and `image-01-live`. A request requires `model` and `prompt`; prompts can contain up to 1,500 characters.
 
 Optional fields:
 
+- `subject_reference`: character reference images. The CLI accepts one public URL or JPEG/PNG base64 data URL with `--subject-reference` and sends it as a `character` reference.
 - `aspect_ratio`: `1:1`, `16:9`, `4:3`, `3:2`, `2:3`, `3:4`, `9:16`, or `21:9`.
-- `width` and `height`: provide both, from 512 through 2048 pixels and divisible by 8. `aspect_ratio` takes priority when both forms are present.
+- `width` and `height`: supported by `image-01`; provide both, from 512 through 2048 pixels and divisible by 8. `aspect_ratio` takes priority when both forms are present.
 - `response_format`: `url` or `base64`. URL results expire after 24 hours.
 - `seed`: integer seed for reproducible output.
 - `n`: 1 through 9 images.
@@ -56,6 +57,11 @@ node tools/clis/minimax-image.js image generate \
 node tools/clis/minimax-image.js image generate \
   --prompt "A square campaign image with a minimal studio background" \
   --region cn_zh --width 1024 --height 1024 --response-format base64
+
+# Generate from a character reference image
+node tools/clis/minimax-image.js image generate \
+  --prompt "Keep the character and place them in a bright studio" \
+  --model image-01-live --subject-reference https://example.com/portrait.png
 
 # Inspect supported models
 node tools/clis/minimax-image.js models

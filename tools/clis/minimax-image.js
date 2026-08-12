@@ -9,7 +9,7 @@ const REGIONS = {
   cn_zh: 'https://api.minimaxi.com',
 }
 
-const IMAGE_MODELS = ['image-01']
+const IMAGE_MODELS = ['image-01', 'image-01-live']
 const DEFAULT_MODEL = 'image-01'
 const ASPECT_RATIOS = ['1:1', '16:9', '4:3', '3:2', '2:3', '3:4', '9:16', '21:9']
 const RESPONSE_FORMATS = ['url', 'base64']
@@ -58,6 +58,16 @@ function buildGenerationBody(args) {
 
   const body = { model, prompt }
 
+  if (args['subject-reference'] !== undefined) {
+    const imageFile = args['subject-reference']
+    const isPublicURL = typeof imageFile === 'string' && /^https?:\/\//i.test(imageFile)
+    const isDataURL = typeof imageFile === 'string' && /^data:image\/(?:jpeg|jpg|png);base64,/i.test(imageFile)
+    if (!isPublicURL && !isDataURL) {
+      throw new Error('--subject-reference must be a public URL or a JPEG/PNG base64 data URL')
+    }
+    body.subject_reference = [{ type: 'character', image_file: imageFile }]
+  }
+
   if (args['aspect-ratio']) {
     if (!ASPECT_RATIOS.includes(args['aspect-ratio'])) {
       throw new Error(`--aspect-ratio must be one of: ${ASPECT_RATIOS.join(', ')}`)
@@ -69,6 +79,7 @@ function buildGenerationBody(args) {
   const hasHeight = args.height !== undefined
   if (hasWidth !== hasHeight) throw new Error('--width and --height must be provided together')
   if (hasWidth) {
+    if (model !== 'image-01') throw new Error('--width and --height are only supported by image-01')
     const width = integerFlag(args.width, 'width')
     const height = integerFlag(args.height, 'height')
     for (const [name, value] of [['width', width], ['height', height]]) {
@@ -176,7 +187,7 @@ async function main(argv = process.argv.slice(2)) {
     result = {
       error: 'Unknown command',
       usage: {
-        image: 'image generate --prompt <text> [--model image-01] [--aspect-ratio <ratio> | --width <px> --height <px>] [--response-format <url|base64>] [--seed <n>] [--n <1-9>] [--prompt-optimizer <true|false>]',
+        image: 'image generate --prompt <text> [--model <image-01|image-01-live>] [--subject-reference <url|data-url>] [--aspect-ratio <ratio> | --width <px> --height <px>] [--response-format <url|base64>] [--seed <n>] [--n <1-9>] [--prompt-optimizer <true|false>]',
         models: 'models',
         options: '--region <global_en|cn_zh> --dry-run',
       },

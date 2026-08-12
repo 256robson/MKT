@@ -49,6 +49,21 @@ describe('MiniMax image CLI', () => {
     assert.equal(run.json.body.height, 1024)
   })
 
+  test('builds a reference-image request with the live model', () => {
+    const run = runCli([
+      'image', 'generate', '--prompt', 'Keep the character and change the setting',
+      '--model', 'image-01-live', '--subject-reference', 'https://example.test/portrait.png',
+      '--dry-run',
+    ])
+
+    assert.equal(run.status, 0)
+    assert.equal(run.json.body.model, 'image-01-live')
+    assert.deepEqual(run.json.body.subject_reference, [{
+      type: 'character',
+      image_file: 'https://example.test/portrait.png',
+    }])
+  })
+
   test('accepts a base override with or without the API version suffix', () => {
     assert.equal(
       endpointURL('https://api.minimax.io', '/v1/image_generation'),
@@ -90,6 +105,14 @@ describe('MiniMax image CLI', () => {
     assert.throws(
       () => buildGenerationBody({ prompt: 'test', n: '10' }),
       /--n must be from 1 to 9/
+    )
+    assert.throws(
+      () => buildGenerationBody({ prompt: 'test', 'subject-reference': 'portrait.png' }),
+      /--subject-reference must be a public URL or a JPEG\/PNG base64 data URL/
+    )
+    assert.throws(
+      () => buildGenerationBody({ prompt: 'test', model: 'image-01-live', width: '1024', height: '1024' }),
+      /--width and --height are only supported by image-01/
     )
   })
 })
