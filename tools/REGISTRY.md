@@ -90,6 +90,7 @@ Quick reference for AI agents to discover tool capabilities and integration meth
 | rb2b | Visitor Identification | ✓ | - | - | - | [rb2b.md](integrations/rb2b.md) |
 | gong | Revenue Intelligence | ✓ | - | - | - | [gong.md](integrations/gong.md) |
 | airops | AI Content | ✓ | - | [✓](clis/airops.js) | - | [airops.md](integrations/airops.md) |
+| minimax-image | Image Generation | ✓ | - | [✓](clis/minimax-image.js) | - | [minimax-image.md](integrations/minimax-image.md) |
 | buffer | Social | ✓ | - | [✓](clis/buffer.js) | - | [buffer.md](integrations/buffer.md) |
 | wistia | Video | ✓ | - | [✓](clis/wistia.js) | - | [wistia.md](integrations/wistia.md) |
 | heygen | Video | ✓ | ✓ | - | ✓ | [heygen.md](integrations/heygen.md) |
@@ -449,6 +450,16 @@ AI-powered content generation and optimization platforms.
 | **airops** | AI content workflows, SEO content | Flow-based automation |
 
 **Agent recommendation**: AirOps for building AI content workflows that generate SEO-optimized content at scale.
+
+### Image Generation
+
+Generate original marketing images from text prompts.
+
+| Tool | Best For | Notes |
+|------|----------|-------|
+| **minimax-image** | Regional text and reference-image generation | CLI supports URL and base64 output |
+
+**Agent recommendation**: Use MiniMax Image for synchronous marketing-image generation with explicit dimensions or common aspect ratios.
 
 ### AI Search
 
